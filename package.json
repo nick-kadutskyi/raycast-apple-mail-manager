@@ -1,6 +1,6 @@
 {
   "$schema": "https://www.raycast.com/schemas/extension.json",
-  "name": "move-selected-messages",
+  "name": "mail-manager",
   "title": "Mail Manager",
   "description": "Helps to manager Apple Mail folders and messages",
   "icon": "extension_icon.png",

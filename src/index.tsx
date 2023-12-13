@@ -7,18 +7,18 @@ import { Mail } from "@jxa/types/src/core/Mail";
 type PreparedList = {
   accountName: string,
   mailboxes: { name: string, originalName: string, unreadCount: number }[],
-  params: unknown
+  params: { id: string, userName: string, accountType: string }
 }[]
 export default function Command() {
   const [list, setList] = useState<PreparedList>([]);
-  const [selection, setSelection] = useState([]);
+  const [selection, setSelection] = useState<unknown[]>([]);
 
   useEffect(() => {
-    run(() => {
+    run<{ list: PreparedList, selection: unknown[] }>(() => {
       function getMailboxName(mailbox: Mail.Mailbox, append: string): string {
         const name = mailbox.name();
         const parent = mailbox.container();
-        let parentIsAccount = false;
+        let parentIsAccount;
         try {
           parent?.userName();
           parentIsAccount = true;
@@ -53,9 +53,9 @@ export default function Command() {
       }
       return { list, selection };
     })
-      .then((r: unknown) => {
-        setList(r?.list);
-        setSelection(r?.selection);
+      .then(({ list, selection }) => {
+        setList(list);
+        setSelection(selection);
       })
       .catch(err => {
         console.log(err);
@@ -137,7 +137,7 @@ export default function Command() {
       .catch(err => {
         console.log(err);
       });
-  };
+  }
 
   return (
     <List

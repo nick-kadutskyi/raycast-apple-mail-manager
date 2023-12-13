@@ -62,7 +62,10 @@ export default function Command() {
       });
   }, []);
 
-  function addToMailbox(accountName: string, accountId: string, mailboxName: string) {
+  function addToMailbox({ accountId, mailboxName }: {
+    accountId: string,
+    mailboxName: string
+  }) {
     run((accountId, mailboxName) => {
       const mail = Application("Mail");
       const accounts = mail.accounts;
@@ -92,15 +95,10 @@ export default function Command() {
       });
   }
 
-  function goToMailbox({ accountName, accountId, mailboxName }: {
-    accountName?: string,
+  function goToMailbox({ accountId, mailboxName }: {
     accountId?: string,
     mailboxName: string
   }) {
-    console.log(
-      `Going to mailbox ${mailboxName} in account ${accountName}`
-    );
-
     run((accountId, mailboxName) => {
       const mail = Application("Mail");
       const accounts = mail.accounts;
@@ -122,7 +120,6 @@ export default function Command() {
         mail.MessageViewer().make();
       }
       const mv = mail.messageViewers()[0];
-      console.log(mv.inbox().name());
       mv.selectedMailboxes.set(
         mailboxName === "All Inboxes"
           ? mv.inbox()
@@ -190,12 +187,14 @@ export default function Command() {
                     {environment.commandName === "index"
                       ? <Action
                         title={`Move to ${name}`}
-                        onAction={() => addToMailbox(accountName, params?.id, originalName)}
+                        onAction={() => addToMailbox({
+                          accountId: params?.id,
+                          mailboxName: originalName
+                        })}
                       />
                       : <Action
                         title={`Go to ${name}`}
                         onAction={() => goToMailbox({
-                          accountName,
                           accountId: params?.id,
                           mailboxName: originalName
                         })}

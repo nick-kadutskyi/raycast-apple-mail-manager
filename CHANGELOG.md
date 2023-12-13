@@ -1,3 +1,6 @@
-# Move selected messages Changelog
+# Mail Manager Changelog
 
-## [Initial Version] - 2023-12-12
+## [Added Initial Commands] - 2023-12-12
+- Command: Move Selected Emails to Mailbox
+- Command: Go to Mailbox
+- Initial version code

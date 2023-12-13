@@ -1,28 +1,30 @@
 {
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "move-selected-messages",
-  "title": "Move selected messages",
-  "description": "Moves selected message in Apple Mail to a selected folder",
-  "icon": "command-icon.png",
+  "title": "Mail Manager",
+  "description": "Helps to manager Apple Mail folders and messages",
+  "icon": "extension_icon.png",
   "author": "nick_kadutskyi",
   "owner": "nick-kadutskyi-consulting-llc",
   "categories": [
-    "Productivity"
+    "Productivity",
+    "Applications",
+    "System"
   ],
   "license": "MIT",
   "commands": [
     {
       "name": "index",
-      "title": "Move selected emails to...",
-      "subtitle": "Apple Mail folder",
+      "title": "Move Selected Emails To Mailbox",
+      "subtitle": "Apple Mail",
       "description": "Lists available folders to move selected emails to",
       "mode": "view",
       "icon": "📨"
     },
     {
       "name": "goto",
-      "title": "Go to...",
-      "subtitle": "Apple Mail folder",
+      "title": "Go To Mailbox",
+      "subtitle": "Apple Mail",
       "description": "Lists available folders to go to",
       "mode": "view",
       "icon": "📥"

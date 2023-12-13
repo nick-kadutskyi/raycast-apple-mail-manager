@@ -1,3 +1,3 @@
-# Move selected messages
+# Mail Manager
 
-Moves selected message in Apple Mail to a selected folder
+Helps to manager Apple Mail folders and messages

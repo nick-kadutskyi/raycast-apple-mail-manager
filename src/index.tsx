@@ -69,6 +69,8 @@ export default function Command() {
     run((accountId, mailboxName) => {
       const mail = Application("Mail");
       const accounts = mail.accounts;
+
+      // Get mailbox object to move messages to
       let mailbox = null;
       for (let i = 0; i < accounts.length; i++) {
         if (accounts[i].id() === accountId) {
@@ -81,10 +83,59 @@ export default function Command() {
           }
         }
       }
-      const selection: [] = mail.selection();
+
+      type MessageLocal = {
+        after: () => MessageLocal,
+        before: () => MessageLocal
+      } & Mail.Message
+      // Currently selected messages
+      const selection: MessageLocal[] = mail.selection();
+
+      // Get possible selections after move
+      let afterMoveSelect: MessageLocal[] = [];
+      try {
+        afterMoveSelect.push(selection[0].before());
+      } catch (e) {
+        // Do nothing
+      }
+      try {
+        afterMoveSelect.push(selection[0].after());
+      } catch (e) {
+        // Do nothing
+      }
+      try {
+        afterMoveSelect.push(selection[selection.length - 1].before());
+      } catch (e) {
+        // Do nothing
+      }
+      try {
+        afterMoveSelect.push(selection[selection.length - 1].after());
+      } catch (e) {
+        // Do nothing
+      }
+      afterMoveSelect = afterMoveSelect.filter(function(m: Mail.Message): boolean {
+        return selection.filter((s: Mail.Message) => {
+          return s?.id() === m?.id();
+        }).length === 0;
+      });
+
+      // Move selected messages to mailbox
       for (let i = 0; i < selection.length; i++) {
         const message = selection[i];
         mail.move(message, { to: mailbox });
+      }
+
+      // Select messages after move
+      if (afterMoveSelect.length > 0) {
+        try {
+          mail.messageViewers[0].selectedMessages = afterMoveSelect[0].before();
+        } catch (e) {
+          try {
+            mail.messageViewers[0].selectedMessages = afterMoveSelect[0].after();
+          } catch (e) {
+            mail.messageViewers[0].selectedMessages = afterMoveSelect[0];
+          }
+        }
       }
     }, accountId, mailboxName)
       .then(() => {

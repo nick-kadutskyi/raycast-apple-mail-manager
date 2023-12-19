@@ -69,7 +69,6 @@ export default function Command() {
     run((accountId, mailboxName) => {
       const mail = Application("Mail");
       const accounts = mail.accounts;
-
       // Get mailbox object to move messages to
       let mailbox = null;
       for (let i = 0; i < accounts.length; i++) {
@@ -83,14 +82,14 @@ export default function Command() {
           }
         }
       }
-
       type MessageLocal = {
         after: () => MessageLocal,
         before: () => MessageLocal
       } & Mail.Message
       // Currently selected messages
       const selection: MessageLocal[] = mail.selection();
-
+      // Gets current mailbox
+      const currentMailboxes = mail.messageViewers[0].selectedMailboxes();
       // Get possible selections after move
       let afterMoveSelect: MessageLocal[] = [];
       try {
@@ -113,18 +112,17 @@ export default function Command() {
       } catch (e) {
         // Do nothing
       }
+      // Filter out the ones that are selected
       afterMoveSelect = afterMoveSelect.filter(function(m: Mail.Message): boolean {
         return selection.filter((s: Mail.Message) => {
           return s?.id() === m?.id();
         }).length === 0;
       });
-
       // Move selected messages to mailbox
       for (let i = 0; i < selection.length; i++) {
         const message = selection[i];
         mail.move(message, { to: mailbox });
       }
-
       // Select messages after move
       if (afterMoveSelect.length > 0) {
         try {
@@ -133,13 +131,31 @@ export default function Command() {
           try {
             mail.messageViewers[0].selectedMessages = afterMoveSelect[0].after();
           } catch (e) {
-            mail.messageViewers[0].selectedMessages = afterMoveSelect[0];
+            try {
+              mail.messageViewers[0].selectedMessages = afterMoveSelect[0];
+            } catch (e) {
+              console.log("Failed to select messages after move.");
+            }
+          }
+        }
+      } else {
+        // If failed to get before and after message select the first message in one of the selected mailboxes
+        for (let i = 0; i < currentMailboxes.length; i++) {
+          if (currentMailboxes[i].messages.length > 0) {
+            mail.messageViewers[0].selectedMessages = currentMailboxes[i].messages.length > 0 ? currentMailboxes[i].messages[0] : null;
+            break;
           }
         }
       }
     }, accountId, mailboxName)
       .then(() => {
         void closeMainWindow();
+        void run(() => {
+          if (Application("Mail").selection().length === 0) {
+            // If failed to select then use keystorke to select the first message in the first mailbox
+            Application("System Events").keyCode(125);
+          }
+        });
       })
       .catch(err => {
         console.log(err);
@@ -165,7 +181,6 @@ export default function Command() {
           }
         }
       }
-      // mail.open(mailbox);
       mail.activate();
       if (mail.messageViewers().length === 0) {
         mail.MessageViewer().make();

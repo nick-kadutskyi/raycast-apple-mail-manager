@@ -25,7 +25,7 @@ export default function Command() {
         } catch (e) {
           parentIsAccount = false;
         }
-        return parentIsAccount ? name + append : getMailboxName(parent, `/${name}`);
+        return parentIsAccount ? name + append : getMailboxName(parent, `/${name}` + append);
       }
 
       const mail = Application("Mail");
@@ -54,6 +54,9 @@ export default function Command() {
       return { list, selection };
     })
       .then(({ list, selection }) => {
+        list[0].mailboxes.forEach((m) => {
+          console.log(m, m.originalName + "-" + m.name);
+        });
         setList(list);
         setSelection(selection);
       })
@@ -242,7 +245,7 @@ export default function Command() {
           <List.Section title={accountName} subtitle={params?.userName} key={accountName}>
             {mailboxes.map(({ name, originalName, unreadCount }) => (
               <List.Item
-                id={accountName + name + unreadCount}
+                id={name}
                 title={name}
                 subtitle={"(" + unreadCount + ")"}
                 key={name}

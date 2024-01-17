@@ -242,7 +242,7 @@ export default function Command() {
           <List.Section title={accountName} subtitle={params?.userName} key={accountName}>
             {mailboxes.map(({ name, originalName, unreadCount }) => (
               <List.Item
-                id={name}
+                id={accountName + name + unreadCount}
                 title={name}
                 subtitle={"(" + unreadCount + ")"}
                 key={name}

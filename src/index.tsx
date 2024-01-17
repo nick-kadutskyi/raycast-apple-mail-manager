@@ -54,9 +54,6 @@ export default function Command() {
       return { list, selection };
     })
       .then(({ list, selection }) => {
-        list[0].mailboxes.forEach((m) => {
-          console.log(m, m.originalName + "-" + m.name);
-        });
         setList(list);
         setSelection(selection);
       })

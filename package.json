@@ -5,6 +5,7 @@
   "description": "Helps to manage Apple Mail folders and messages",
   "icon": "extension_icon.png",
   "author": "nick_kadutskyi",
+  "owner": "nick-kadutskyi-consulting-llc",
   "categories": [
     "Productivity",
     "Applications",
@@ -27,6 +28,14 @@
       "description": "Lists available folders to go to",
       "mode": "view",
       "icon": "📥"
+    },
+    {
+      "name": "get-deep-links",
+      "title": "Get Deep Links",
+      "subtitle": "Apple Mail",
+      "description": "Gets deep links for selected emails",
+      "mode": "no-view",
+      "icon": "🔗"
     }
   ],
   "dependencies": {
